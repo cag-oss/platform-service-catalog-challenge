@@ -120,7 +120,7 @@ Pull requests run TypeScript build, lint, tests, Terraform formatting, and Terra
 
 ## AI Workflow
 
-`CLAUDE.md` documents the AI agent constraints and review checklist used while building this project. For the submission, leave one pull request open showing the AI-assisted iteration process and note where generated suggestions were accepted, rejected, or tightened by human review.
+`CLAUDE.md` documents the AI agent constraints and review checklist used while building this project. [docs/AI_WORKFLOW.md](docs/AI_WORKFLOW.md) summarizes how AI was used, where the output needed course correction, and what I would improve in the workflow.
 
 ## Digging Deeper Option
 
