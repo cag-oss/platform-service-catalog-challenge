@@ -1,0 +1,52 @@
+<mxfile host="app.diagrams.net">
+  <diagram id="platform-catalog" name="Platform Catalog Architecture">
+    <mxGraphModel dx="1169" dy="736" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="dev" value="Developer / Interviewer" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f2ff;strokeColor=#4b6f9f;" vertex="1" parent="1">
+          <mxGeometry x="60" y="160" width="160" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="api" value="API Gateway HTTP API" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff4d6;strokeColor=#b88a00;" vertex="1" parent="1">
+          <mxGeometry x="300" y="160" width="170" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="lambda" value="Lambda&lt;br&gt;Platform Catalog API" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f6e8ff;strokeColor=#7a4ca0;" vertex="1" parent="1">
+          <mxGeometry x="550" y="160" width="180" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="ddb" value="DynamoDB&lt;br&gt;Services Table" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e7f7ed;strokeColor=#39835a;" vertex="1" parent="1">
+          <mxGeometry x="810" y="160" width="180" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="logs" value="CloudWatch Logs&lt;br&gt;Structured JSON + Access Logs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f0f0f0;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="430" y="310" width="210" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="dashboard" value="CloudWatch Dashboard&lt;br&gt;Invocations + Errors" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f0f0f0;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="690" y="310" width="210" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="sns" value="SNS Alarm Topic" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe8e8;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="760" y="460" width="160" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-dev-api" style="endArrow=block;html=1;rounded=0;" edge="1" parent="1" source="dev" target="api">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-api-lambda" style="endArrow=block;html=1;rounded=0;" edge="1" parent="1" source="api" target="lambda">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-lambda-ddb" style="endArrow=block;html=1;rounded=0;" edge="1" parent="1" source="lambda" target="ddb">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-api-logs" style="endArrow=block;html=1;rounded=0;" edge="1" parent="1" source="api" target="logs">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-lambda-logs" style="endArrow=block;html=1;rounded=0;" edge="1" parent="1" source="lambda" target="logs">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-lambda-dashboard" style="endArrow=block;html=1;rounded=0;" edge="1" parent="1" source="lambda" target="dashboard">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-dashboard-sns" style="endArrow=block;html=1;rounded=0;" edge="1" parent="1" source="dashboard" target="sns">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

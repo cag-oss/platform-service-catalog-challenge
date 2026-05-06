@@ -1,0 +1,31 @@
+{
+  "name": "platform-service-catalog",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Internal developer platform service catalog and health reporter API.",
+  "type": "module",
+  "scripts": {
+    "build": "tsc --noEmit && esbuild src/handler.ts --bundle --platform=node --target=node22 --format=cjs --outfile=dist/handler.js",
+    "lint": "eslint \"src/**/*.ts\" \"test/**/*.ts\"",
+    "test": "vitest run",
+    "package": "npm run build && cd dist && zip -r ../function.zip ."
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.810.0",
+    "@aws-sdk/lib-dynamodb": "^3.810.0",
+    "zod": "^3.24.4"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.26.0",
+    "@types/aws-lambda": "^8.10.149",
+    "@types/node": "^22.15.3",
+    "eslint": "^9.26.0",
+    "esbuild": "^0.25.4",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.32.0",
+    "vitest": "^3.1.3"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

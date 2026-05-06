@@ -1,0 +1,7 @@
+node_modules/
+dist/
+function.zip
+.terraform/
+terraform.tfstate*
+*.tfplan
+.DS_Store

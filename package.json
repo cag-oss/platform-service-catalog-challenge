@@ -1,0 +1,20 @@
+{
+  "name": "platform-catalog-challenge",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Senior Platform Engineer take-home challenge repository.",
+  "scripts": {
+    "build": "npm --prefix app run build",
+    "lint": "npm --prefix app run lint",
+    "package": "npm --prefix app run package",
+    "test": "npm --prefix app test",
+    "tf:fmt": "terraform fmt -recursive infra",
+    "tf:fmt:check": "terraform fmt -check -recursive infra",
+    "tf:validate": "terraform -chdir=infra/environments/dev validate",
+    "tf:test:dynamodb": "terraform -chdir=infra/modules/dynamodb test",
+    "tf:test:platform-api": "terraform -chdir=infra/modules/platform-api test"
+  },
+  "workspaces": [
+    "app"
+  ]
+}
