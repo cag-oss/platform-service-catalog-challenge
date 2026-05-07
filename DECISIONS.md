@@ -7,3 +7,7 @@ I chose Lambda + API Gateway + DynamoDB because the service is lightweight, requ
 ## Manual Terraform Apply Workflow
 
 The deployment workflow is intentionally manual through GitHub Actions `workflow_dispatch`. For a take-home project, that balances automation with operational control: every deploy uses the same pipeline, but infrastructure changes still require an explicit human action. In a larger platform, I would likely evolve this into environment promotion with protected branches, plan review comments on pull requests, and separate AWS roles per environment.
+
+## Authentication
+
+The API is intentionally unauthenticated for a short-lived take-home demo so reviewers can exercise it with simple curl commands during the interview. In a production internal developer platform, I would put the API behind IAM authorization, a private API Gateway endpoint, Cognito/OIDC, or an internal developer portal proxy depending on the organization's identity model and network boundaries.

@@ -4,7 +4,7 @@ import {
   GetCommand,
   PutCommand,
   ScanCommand,
-  UpdateCommand
+  UpdateCommand,
 } from "@aws-sdk/lib-dynamodb";
 import type { HealthCheckRecord, ServiceRecord } from "./models.js";
 
@@ -16,13 +16,15 @@ if (!tableName) {
 
 const client = DynamoDBDocumentClient.from(new DynamoDBClient({}));
 
-export async function createService(record: ServiceRecord): Promise<ServiceRecord> {
+export async function createService(
+  record: ServiceRecord,
+): Promise<ServiceRecord> {
   await client.send(
     new PutCommand({
       TableName: tableName,
       Item: record,
-      ConditionExpression: "attribute_not_exists(serviceId)"
-    })
+      ConditionExpression: "attribute_not_exists(serviceId)",
+    }),
   );
 
   return record;
@@ -32,19 +34,21 @@ export async function listServices(): Promise<ServiceRecord[]> {
   const response = await client.send(
     new ScanCommand({
       TableName: tableName,
-      Limit: 100
-    })
+      Limit: 100,
+    }),
   );
 
   return (response.Items ?? []) as ServiceRecord[];
 }
 
-export async function getService(serviceId: string): Promise<ServiceRecord | undefined> {
+export async function getService(
+  serviceId: string,
+): Promise<ServiceRecord | undefined> {
   const response = await client.send(
     new GetCommand({
       TableName: tableName,
-      Key: { serviceId }
-    })
+      Key: { serviceId },
+    }),
   );
 
   return response.Item as ServiceRecord | undefined;
@@ -53,20 +57,21 @@ export async function getService(serviceId: string): Promise<ServiceRecord | und
 export async function updateServiceHealth(
   serviceId: string,
   latestCheck: HealthCheckRecord,
-  updatedAt: string
+  updatedAt: string,
 ): Promise<ServiceRecord | undefined> {
   const response = await client.send(
     new UpdateCommand({
       TableName: tableName,
       Key: { serviceId },
-      UpdateExpression: "SET latestCheck = :latestCheck, updatedAt = :updatedAt",
+      UpdateExpression:
+        "SET latestCheck = :latestCheck, updatedAt = :updatedAt",
       ConditionExpression: "attribute_exists(serviceId)",
       ExpressionAttributeValues: {
         ":latestCheck": latestCheck,
-        ":updatedAt": updatedAt
+        ":updatedAt": updatedAt,
       },
-      ReturnValues: "ALL_NEW"
-    })
+      ReturnValues: "ALL_NEW",
+    }),
   );
 
   return response.Attributes as ServiceRecord | undefined;

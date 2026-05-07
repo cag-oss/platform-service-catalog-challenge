@@ -10,13 +10,17 @@ interface LogFields {
   [key: string]: unknown;
 }
 
-export function log(level: LogLevel, event: string, fields: LogFields = {}): void {
+export function log(
+  level: LogLevel,
+  event: string,
+  fields: LogFields = {},
+): void {
   const record = {
     level,
     event,
     service: "platform-service-catalog",
     timestamp: new Date().toISOString(),
-    ...fields
+    ...fields,
   };
 
   console.log(JSON.stringify(record));
