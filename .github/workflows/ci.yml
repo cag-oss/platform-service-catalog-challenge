@@ -35,9 +35,6 @@ jobs:
   app:
     name: App checks
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: app
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -47,7 +44,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: app/package-lock.json
+          cache-dependency-path: package-lock.json
 
       - name: Install dependencies
         run: npm ci
@@ -73,10 +70,9 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: app/package-lock.json
+          cache-dependency-path: package-lock.json
 
       - name: Build Lambda package
-        working-directory: app
         run: |
           npm ci
           npm run package
@@ -99,8 +95,12 @@ jobs:
 
       - name: Terraform DynamoDB module tests
         working-directory: infra/modules/dynamodb
-        run: terraform test
+        run: |
+          terraform init -backend=false
+          terraform test
 
       - name: Terraform API module tests
         working-directory: infra/modules/platform-api
-        run: terraform test
+        run: |
+          terraform init -backend=false
+          terraform test
