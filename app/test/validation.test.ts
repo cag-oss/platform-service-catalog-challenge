@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { createHealthCheckSchema, createServiceSchema, parseJsonBody } from "../src/validation.js";
+import {
+  createHealthCheckSchema,
+  createServiceSchema,
+  parseJsonBody,
+} from "../src/validation.js";
 
 describe("createServiceSchema", () => {
   it("accepts a valid service registration", () => {
@@ -9,7 +13,7 @@ describe("createServiceSchema", () => {
       environment: "prod",
       repoUrl: "https://github.com/example/payments-api",
       healthUrl: "https://payments.example.com/health",
-      tags: ["node", "tier-1"]
+      tags: ["node", "tier-1"],
     });
 
     expect(result.name).toBe("payments-api");
@@ -21,19 +25,23 @@ describe("createServiceSchema", () => {
         name: "payments-api",
         team: "checkout",
         environment: "prod",
-        repoUrl: "not-a-url"
-      })
+        repoUrl: "not-a-url",
+      }),
     ).toThrow();
   });
 });
 
 describe("createHealthCheckSchema", () => {
   it("allows known service states", () => {
-    expect(createHealthCheckSchema.parse({ status: "degraded" }).status).toBe("degraded");
+    expect(createHealthCheckSchema.parse({ status: "degraded" }).status).toBe(
+      "degraded",
+    );
   });
 
   it("rejects unknown service states", () => {
-    expect(() => createHealthCheckSchema.parse({ status: "warming-up" })).toThrow();
+    expect(() =>
+      createHealthCheckSchema.parse({ status: "warming-up" }),
+    ).toThrow();
   });
 });
 

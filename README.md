@@ -29,12 +29,12 @@ flowchart LR
 
 ## API
 
-| Method | Path | Description |
-| --- | --- | --- |
-| `GET` | `/health` | Runtime health probe |
-| `POST` | `/services` | Register a service |
-| `GET` | `/services` | List registered services |
-| `GET` | `/services/{serviceId}` | Get one service |
+| Method | Path                           | Description                 |
+| ------ | ------------------------------ | --------------------------- |
+| `GET`  | `/health`                      | Runtime health probe        |
+| `POST` | `/services`                    | Register a service          |
+| `GET`  | `/services`                    | List registered services    |
+| `GET`  | `/services/{serviceId}`        | Get one service             |
 | `POST` | `/services/{serviceId}/checks` | Publish latest health check |
 
 ## Local Development
@@ -77,6 +77,15 @@ terraform apply tfplan
 
 The `api_endpoint` Terraform output is the base URL for demo commands.
 
+## GitHub Actions Deployment Setup
+
+The manual Terraform deployment workflow uses GitHub OIDC to assume an AWS IAM role. Configure these repository settings before running `.github/workflows/terraform.yml`:
+
+- Repository secret: `AWS_DEPLOY_ROLE_ARN`
+- Optional repository variable: `AWS_REGION`
+
+The assumed role should trust this repository through the GitHub Actions OIDC provider and have permissions to manage the resources in `infra/environments/dev`: Lambda, API Gateway, DynamoDB, IAM, CloudWatch, and SNS. For a production setup, split this into narrower environment-specific roles and require protected-environment approval before apply.
+
 ## Demo Commands
 
 ```bash
@@ -112,7 +121,7 @@ The Lambda emits structured JSON logs with request route, status code, duration,
 
 ## Security
 
-The Lambda role can only read and write the specific DynamoDB table created by this environment. Logs are scoped to the Lambda log group. DynamoDB encryption at rest and point-in-time recovery are enabled. No secrets are required by the current service; sensitive values should be introduced through SSM Parameter Store or Secrets Manager if future integrations need them.
+The Lambda role can only read and write the specific DynamoDB table created by this environment. Logs are scoped to the Lambda log group. DynamoDB encryption at rest and point-in-time recovery are enabled. The API is intentionally unauthenticated for a short-lived take-home demo; a production internal developer platform should place this behind IAM authorization, a private API Gateway endpoint, Cognito/OIDC, or an internal developer portal proxy. No secrets are required by the current service; sensitive values should be introduced through SSM Parameter Store or Secrets Manager if future integrations need them.
 
 ## CI/CD
 
@@ -120,7 +129,7 @@ Pull requests run TypeScript build, lint, tests, Terraform formatting, and Terra
 
 ## AI Workflow
 
-`CLAUDE.md` documents the AI agent constraints and review checklist used while building this project. For the submission, leave one pull request open showing the AI-assisted iteration process and note where generated suggestions were accepted, rejected, or tightened by human review.
+`CLAUDE.md` documents the AI agent constraints and review checklist used while building this project. [docs/AI_WORKFLOW.md](docs/AI_WORKFLOW.md) summarizes how AI was used, where the output needed course correction, and what I would improve in the workflow.
 
 ## Digging Deeper Option
 

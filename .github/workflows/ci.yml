@@ -7,12 +7,9 @@ on:
       - main
 
 jobs:
-  app:
-    name: App checks
+  format:
+    name: Format checks
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: app
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -22,10 +19,39 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: app/package-lock.json
+          cache-dependency-path: package-lock.json
 
       - name: Install dependencies
-        run: npm ci
+        run: |
+          npm ci
+          npm install --include=optional
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.8.5
+
+      - name: Check formatting
+        run: npm run format:check
+
+  app:
+    name: App checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          npm install --include=optional
 
       - name: Run tests
         run: npm test
@@ -48,10 +74,9 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: app/package-lock.json
+          cache-dependency-path: package-lock.json
 
       - name: Build Lambda package
-        working-directory: app
         run: |
           npm ci
           npm run package
@@ -74,8 +99,12 @@ jobs:
 
       - name: Terraform DynamoDB module tests
         working-directory: infra/modules/dynamodb
-        run: terraform test
+        run: |
+          terraform init -backend=false
+          terraform test
 
       - name: Terraform API module tests
         working-directory: infra/modules/platform-api
-        run: terraform test
+        run: |
+          terraform init -backend=false
+          terraform test

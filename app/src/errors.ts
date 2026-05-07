@@ -11,40 +11,42 @@ export class NotFoundError extends Error {
   }
 }
 
-export function errorResponse(error: unknown): APIGatewayProxyStructuredResultV2 {
+export function errorResponse(
+  error: unknown,
+): APIGatewayProxyStructuredResultV2 {
   if (error instanceof ZodError) {
     return jsonResponse(400, {
       error: "ValidationError",
       message: "Request failed validation",
       details: error.issues.map((issue) => ({
         path: issue.path.join("."),
-        message: issue.message
-      }))
+        message: issue.message,
+      })),
     });
   }
 
   if (error instanceof ValidationError || error instanceof NotFoundError) {
     return jsonResponse(error.statusCode, {
       error: error.name,
-      message: error.message
+      message: error.message,
     });
   }
 
   return jsonResponse(500, {
     error: "InternalServerError",
-    message: "Unexpected service error"
+    message: "Unexpected service error",
   });
 }
 
 export function jsonResponse(
   statusCode: number,
-  body: Record<string, unknown>
+  body: Record<string, unknown>,
 ): APIGatewayProxyStructuredResultV2 {
   return {
     statusCode,
     headers: {
-      "content-type": "application/json"
+      "content-type": "application/json",
     },
-    body: JSON.stringify(body)
+    body: JSON.stringify(body),
   };
 }

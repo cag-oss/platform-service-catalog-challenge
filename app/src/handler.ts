@@ -1,14 +1,14 @@
 import type {
   APIGatewayProxyEventV2,
   APIGatewayProxyStructuredResultV2,
-  Context
+  Context,
 } from "aws-lambda";
 import { randomUUID } from "node:crypto";
 import {
   createService,
   getService,
   listServices,
-  updateServiceHealth
+  updateServiceHealth,
 } from "./dynamodb.js";
 import { errorResponse, jsonResponse, NotFoundError } from "./errors.js";
 import { log } from "./logging.js";
@@ -16,12 +16,12 @@ import type { HealthCheckRecord, ServiceRecord } from "./models.js";
 import {
   createHealthCheckSchema,
   createServiceSchema,
-  parseJsonBody
+  parseJsonBody,
 } from "./validation.js";
 
 export async function handler(
   event: APIGatewayProxyEventV2,
-  context: Context
+  context: Context,
 ): Promise<APIGatewayProxyStructuredResultV2> {
   const startedAt = Date.now();
   const route = `${event.requestContext.http.method} ${event.rawPath}`;
@@ -32,7 +32,7 @@ export async function handler(
       requestId: context.awsRequestId,
       route,
       statusCode: response.statusCode,
-      durationMs: Date.now() - startedAt
+      durationMs: Date.now() - startedAt,
     });
     return response;
   } catch (error) {
@@ -43,14 +43,14 @@ export async function handler(
       statusCode: response.statusCode,
       durationMs: Date.now() - startedAt,
       errorName: error instanceof Error ? error.name : "UnknownError",
-      message: error instanceof Error ? error.message : "Unknown error"
+      message: error instanceof Error ? error.message : "Unknown error",
     });
     return response;
   }
 }
 
 async function routeRequest(
-  event: APIGatewayProxyEventV2
+  event: APIGatewayProxyEventV2,
 ): Promise<APIGatewayProxyStructuredResultV2> {
   const method = event.requestContext.http.method;
   const path = event.rawPath;
@@ -66,7 +66,7 @@ async function routeRequest(
       serviceId: `svc_${randomUUID()}`,
       ...input,
       createdAt: now,
-      updatedAt: now
+      updatedAt: now,
     };
 
     return jsonResponse(201, { service: await createService(service) });
@@ -85,11 +85,13 @@ async function routeRequest(
   const healthMatch = path.match(/^\/services\/([^/]+)\/checks$/);
   if (method === "POST" && healthMatch) {
     await getRequiredService(healthMatch[1]);
-    const input = createHealthCheckSchema.parse(parseJsonBody(event.body ?? null));
+    const input = createHealthCheckSchema.parse(
+      parseJsonBody(event.body ?? null),
+    );
     const now = new Date().toISOString();
     const latestCheck: HealthCheckRecord = {
       ...input,
-      checkedAt: now
+      checkedAt: now,
     };
     const service = await updateServiceHealth(healthMatch[1], latestCheck, now);
     return jsonResponse(200, { service });
